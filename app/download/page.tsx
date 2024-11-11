@@ -119,7 +119,16 @@ const DownloadPageUsingFileName: React.FC = () => {
       <button
         className="bg-[#007bff] w-[12rem] rounded-[8px] "
         style={{ padding: "10px 20px" }}
-        onClick={async () => await downloadPdfFile2()}
+        onClick={async () =>
+          await downloadPdfFile2("echap13.pdf").then((val) => {
+            const myDiv = document.getElementById("anchorDiv");
+            const aTag = document.createElement("a");
+            aTag.setAttribute("href", val);
+            aTag.setAttribute("download", "random-l");
+            aTag.innerText = "link text";
+            if (myDiv) myDiv.appendChild(aTag);
+          })
+        }
       >
         Generate SAS Url
       </button>
@@ -172,6 +181,7 @@ const DownloadPageUsingFileName: React.FC = () => {
             onChange={splitPDFFile}
           />
         </div>
+        <div id="anchorDiv"></div>
       </div>
     </div>
   );

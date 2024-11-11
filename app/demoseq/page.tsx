@@ -52,6 +52,7 @@ const DemoSequentialPage = () => {
     // const blockBlobClient = containerClient.getBlockBlobClient(file.name);
 
     //using controlled sas permission
+    console.log("is api call????");
     const sasUrl = await downloadPdfFile2(file.name);
     const blockBlobClient = new BlockBlobClient(sasUrl);
     console.log("uploading");
@@ -224,6 +225,20 @@ const DemoSequentialPage = () => {
           }}
         >
           abort 1
+        </button>
+      </div>
+
+      <div style={{ margin: "1rem" }}>
+        <button
+          className="bg-[#007bff] w-[10rem] rounded-[8px] "
+          style={{ padding: "10px 20px" }}
+          onClick={() =>
+            downloadPdfFile2().then((val) =>
+              console.log("from ckick cons", val)
+            )
+          }
+        >
+          check server
         </button>
       </div>
     </div>

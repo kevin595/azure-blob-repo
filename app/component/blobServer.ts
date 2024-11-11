@@ -9,7 +9,6 @@ import {
   BlobSASPermissions,
   BlobSASPermissionsLike,
   BlobServiceClient,
-  BlockBlobClient,
   generateAccountSASQueryParameters,
   SASProtocol,
   StorageSharedKeyCredential,
@@ -21,6 +20,7 @@ export const downloadPdfFile2 = async (
 ): Promise<string> => {
   "use server";
   console.log("started sas");
+  console.log("is it server or browser?");
   try {
     const CONTAINER_NAME = "pad-input2";
     const accountName = "lnhpocstorageaccount";

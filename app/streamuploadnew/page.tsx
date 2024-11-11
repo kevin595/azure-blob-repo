@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-const StreamUploadPage: React.FC = () => {
+const Streamuploadnew: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   interface UploadProgress {
@@ -19,12 +19,10 @@ const StreamUploadPage: React.FC = () => {
   };
 
   const onUpload = async () => {
-    // const promiseArr = [];
     const chunkSize = 50 * 1024 * 1024; // 2 MB
-    // const uploadUrl =
-    //   "https://lifenet-e2awfdhdczfcaubg.southindia-01.azurewebsites.net/api/Upload/chunk";
+
     const uploadUrl =
-      "https://lifenetapi-cqe4hmesbxbrhtet.canadaeast-01.azurewebsites.net/FileUpload/UploadChunkStream";
+      "https://lifenetapi-cqe4hmesbxbrhtet.canadaeast-01.azurewebsites.net/FileUpload/StageChunkStream";
     console.log("perform start", performance.measure("mem-meas"));
     while (selectedFiles.length > 0) {
       const tempFile = selectedFiles.pop();
@@ -38,24 +36,18 @@ const StreamUploadPage: React.FC = () => {
               console.log(`Progress: ${progress.percentage}%`);
             }
           );
+          await fetch(
+            `https://lifenetapi-cqe4hmesbxbrhtet.canadaeast-01.azurewebsites.net/FileUpload/CommitChunkStream/${tempFile.name}`,
+            {
+              method: "POST",
+            }
+          ).then(() => console.log("commit completed"));
         } catch (error) {
           console.error("Upload failed:", error);
         }
-        // promiseArr.push(
-        //   uploadFileInChunks(tempFile, chunkSize, uploadUrl, (progress) => {
-        //     console.log(`Progress: ${progress.percentage}%`);
-        //   })
-        // );
       }
     }
     console.log("perform start", performance.measure("mem-meas"));
-    // try {
-    //   (await Promise.allSettled(promiseArr)).map((obj) => {
-    //     console.log("result-", obj.status);
-    //   });
-    // } catch (error) {
-    //   console.error("Upload failed:", error);
-    // }
   };
 
   async function uploadFileInChunks(
@@ -84,12 +76,9 @@ const StreamUploadPage: React.FC = () => {
       const formData = new FormData();
 
       formData.append("chunk", chunk);
-      formData.append("chunkNumber", chunkIndex.toString()); // Use the loop variable 'i' here
-      formData.append("totalChunks", totalChunk.toString());
-      formData.append("fileName", file.name); // Send the original file name
 
       // Uploading the chunk using fetch API
-      return fetch(`${uploadUrl}/${file.name}/${chunkIndex}/${totalChunk}`, {
+      return fetch(`${uploadUrl}/${file.name}/${chunkIndex}`, {
         method: "POST",
         body: chunk,
         headers: {
@@ -112,25 +101,8 @@ const StreamUploadPage: React.FC = () => {
           });
         })
         .catch((err) => {
-          // Update the total uploaded size
-          // totalUploaded += chunk.size;
-
-          // // Calculate the progress
-          // const percentage = Math.floor((totalUploaded / totalSize) * 100);
-
-          // // Notify progress
-          // onProgress({
-          //   totalUploaded,
-          //   totalSize,
-          //   percentage,
-          // });
-
           throw new Error(`Chunk upload failed: ${err?.statusText}`);
         });
-
-      // if (!response.ok) {
-      //   throw new Error(`Chunk upload failed: ${response.statusText}`);
-      // }
     };
 
     const numberOfChunks = Math.ceil(totalSize / chunkSize);
@@ -149,19 +121,6 @@ const StreamUploadPage: React.FC = () => {
       promiseArr.push(
         uploadChunk(chunk, chunkIndex, numberOfChunks, start, end)
       );
-
-      // Update the total uploaded size
-      // totalUploaded += chunk.size;
-
-      // // Calculate the progress
-      // const percentage = Math.floor((totalUploaded / totalSize) * 100);
-
-      // // Notify progress
-      // onProgress({
-      //   totalUploaded,
-      //   totalSize,
-      //   percentage,
-      // });
     }
 
     (await Promise.allSettled(promiseArr)).map((obj) => {
@@ -270,14 +229,14 @@ const StreamUploadPage: React.FC = () => {
           download
         </button>
       </div>
-      <a
-        href={`https://lifenet-e2awfdhdczfcaubg.southindia-01.azurewebsites.net/FileUpload/Download/echap13.pdf`}
+      {/* <a
+        href={`https://lifenetapi-cqe4hmesbxbrhtet.canadaeast-01.azurewebsites.net/FileUpload/Download/echap13.pdf`}
         download={"Mock 650mb 204 pages 600dpi-2.pdf"}
       >
         temp download
-      </a>
+      </a> */}
     </div>
   );
 };
 
-export default StreamUploadPage;
+export default Streamuploadnew;

@@ -13,6 +13,7 @@ const FileSelect: React.FC<FileSelectProps> = ({ onFileChange }) => {
       const tempArr = Array.from(event.target.files);
       onFileChange(tempArr);
     }
+    event.target.files = null;
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {

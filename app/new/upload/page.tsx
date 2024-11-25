@@ -1,9 +1,43 @@
 "use client";
+import { arrayMove } from "@/app/component/dragAndSort/helper";
 import FileSelect from "@/app/component/fileSelect";
-import NestedTable from "@/app/component/nestedTable";
-import { FC } from "react";
+import UploadTable, { IFileData, tempFile } from "@/app/component/uploadTable";
+import { FC, useCallback, useState } from "react";
+
+export interface IUploadFile {
+  file: File;
+  progress: number;
+}
 
 const UploadPage: FC = () => {
+  const [fileArrayState, setFileArrayState] = useState<IUploadFile[]>([]);
+  const [completedFileState, setCompletedFileState] =
+    useState<IFileData[]>(tempFile);
+
+  const onSortEnd = useCallback(
+    (oldIndex: number, newIndex: number) => {
+      setCompletedFileState([
+        ...arrayMove(completedFileState, oldIndex, newIndex),
+      ]);
+    },
+    [completedFileState]
+  );
+
+  const fileUploadHandler = (fileList: File[]) => {
+    const tempFileSet = new Set();
+    const uniqueFileList: IUploadFile[] = [];
+
+    fileList.map((val) => {
+      if (!tempFileSet.has(val.name)) {
+        uniqueFileList.push({ file: val, progress: 0 });
+      } else {
+        //show toast about duplicate file
+        console.log("duplicate file name:", val.name);
+      }
+    });
+    setFileArrayState([...fileArrayState, ...uniqueFileList]);
+  };
+
   return (
     <div>
       <div
@@ -53,10 +87,14 @@ const UploadPage: FC = () => {
           <span style={{ fontSize: "20px", fontWeight: 700 }}>Files</span>
           <div style={{ marginTop: "10px" }}>
             <div style={{ marginBottom: "1rem" }}>
-              <NestedTable />
+              <UploadTable
+                uploadingFiles={fileArrayState}
+                completedFiles={completedFileState}
+                onSortEnd={onSortEnd}
+              />
             </div>
             <div style={{ height: "126px", width: "670px" }}>
-              <FileSelect onFileChange={(fileArr) => console.log(fileArr)} />
+              <FileSelect onFileChange={fileUploadHandler} />
             </div>
           </div>
         </div>

@@ -11,6 +11,8 @@ import { arrayMove } from "../component/dragAndSort/helper";
 import DynamicTable, {
   IColumnType,
 } from "../component/dynamicTable/dynamicTable";
+import SortByDate from "../component/datePicker/sortByDate";
+import { selectAllHeader } from "../component/dynamicTable/helper";
 
 export interface IDonorList {
   filename: string;
@@ -86,18 +88,11 @@ const DemoCmpPage: FC = () => {
       {
         title: "isChecked",
         dataIndex: "isChecked",
-        renderHeader: () => {
-          return (
-            <input
-              type="checkbox"
-              // onClick={onSelectAll}
-              checked={donorListState.every((currentValue) => {
-                return !!currentValue.isChecked;
-              })}
-              id="selectAll"
-            />
-          );
-        },
+        renderHeader: () =>
+          selectAllHeader(donorListState, (val: boolean) => {
+            donorListState.map((obj) => (obj.isChecked = val));
+            setDonorListState([...donorListState]);
+          }),
         render: (val, record, indx) => {
           return (
             <input
@@ -194,12 +189,13 @@ const DemoCmpPage: FC = () => {
           style={{
             margin: "1rem",
             border: "1px solid red",
-            height: "2rem",
-            width: "4rem",
           }}
         >
           <div>helloooo ----</div>
           <input type="datetime-local" placeholder="enter date" />
+        </div>
+        <div style={{ margin: "1rem" }}>
+          <SortByDate />
         </div>
       </div>
     </div>

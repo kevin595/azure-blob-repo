@@ -11,6 +11,11 @@ import { ReactNode } from "react";
 //   props.setInputList(props.inputList);
 // };
 
+export interface ISortProp {
+  sortBy: string;
+  sortType: "asc" | "desc";
+}
+
 export const selectAllHeader = (
   inputList: { isChecked?: boolean }[],
   onSelectAll: (val: boolean) => void
@@ -31,4 +36,30 @@ export const selectAllHeader = (
       id="selectAll"
     />
   );
+};
+
+export const sortableHeader = (
+  title: string,
+  sortTag: string,
+  activeSort: ISortProp,
+  onSortClick: (newSort: ISortProp) => void
+) => {
+  const onSortSelect = () => {
+    const tempSortObj: ISortProp = {
+      sortBy: activeSort.sortBy,
+      sortType: activeSort.sortType,
+    };
+    if (sortTag === activeSort.sortBy) {
+      if (activeSort.sortType === "asc") {
+        tempSortObj.sortType = "desc";
+      } else {
+        tempSortObj.sortType = "asc";
+      }
+    } else {
+      tempSortObj.sortBy = sortTag;
+      tempSortObj.sortType = "desc";
+    }
+    onSortClick(tempSortObj);
+  };
+  return <div onClick={onSortSelect}>{title}</div>;
 };

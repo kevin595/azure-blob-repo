@@ -13,6 +13,7 @@ import DynamicTable, {
 } from "../component/dynamicTable/dynamicTable";
 import SortByDate from "../component/datePicker/sortByDate";
 import { selectAllHeader } from "../component/dynamicTable/helper";
+import Pagination from "../component/pagination/pagination ";
 
 export interface IDonorList {
   filename: string;
@@ -27,6 +28,7 @@ export interface ITableProps extends IDonorList {
 }
 
 const DemoCmpPage: FC = () => {
+  const [pageState, setPageState] = useState(6);
   const [fileListState, setFileListState] = useState<IFileData[]>([
     {
       id: 1,
@@ -196,6 +198,13 @@ const DemoCmpPage: FC = () => {
         </div>
         <div style={{ margin: "1rem" }}>
           <SortByDate />
+        </div>
+        <div style={{ margin: "1rem" }}>
+          <Pagination
+            currentPage={pageState}
+            onPageClick={(val) => setPageState(val)}
+            totalPages={10}
+          />
         </div>
       </div>
     </div>

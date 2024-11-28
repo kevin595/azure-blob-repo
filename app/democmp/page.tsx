@@ -14,6 +14,7 @@ import DynamicTable, {
 import SortByDate from "../component/datePicker/sortByDate";
 import { selectAllHeader } from "../component/dynamicTable/helper";
 import Pagination from "../component/pagination/pagination ";
+import { DateRange } from "react-day-picker";
 
 export interface IDonorList {
   filename: string;
@@ -84,12 +85,17 @@ const DemoCmpPage: FC = () => {
       isChecked: true,
     },
   ]);
+  const [dateRangeState, setDateRangeState] = useState<DateRange | undefined>();
+
+  const [dateSortLabelState, setDateSortLabel] = useState<string | undefined>(
+    ""
+  );
 
   const columnData = useCallback((): IColumnType<ITableProps>[] => {
     const tempColumnData: IColumnType<ITableProps>[] = [
       {
         title: "isChecked",
-        dataIndex: "isChecked",
+        dataKey: "isChecked",
         renderHeader: () =>
           selectAllHeader(donorListState, (val: boolean) => {
             donorListState.map((obj) => (obj.isChecked = val));
@@ -111,19 +117,19 @@ const DemoCmpPage: FC = () => {
       },
       {
         title: "FileName",
-        dataIndex: "filename",
+        dataKey: "filename",
       },
       {
         title: "Uploaded by",
-        dataIndex: "uploadedBy",
+        dataKey: "uploadedBy",
       },
       {
         title: "uploaded on",
-        dataIndex: "uploadedOn",
+        dataKey: "uploadedOn",
       },
       {
         title: "status",
-        dataIndex: "status",
+        dataKey: "status",
       },
     ];
     return tempColumnData;
@@ -185,7 +191,16 @@ const DemoCmpPage: FC = () => {
           </SortContainer>
         </div>
         <div style={{ margin: "1rem" }}>
-          <DynamicTable columns={columnData()} dataSource={donorListState} />
+          {/* <DynamicTable
+            columns={columnData()}
+            dataSource={donorListState}
+            dataKey="id"
+          /> */}
+          {DynamicTable<ITableProps>({
+            columns: columnData(),
+            dataSource: donorListState,
+            dataId: "id",
+          })}
         </div>
         <div
           style={{
@@ -197,7 +212,12 @@ const DemoCmpPage: FC = () => {
           <input type="datetime-local" placeholder="enter date" />
         </div>
         <div style={{ margin: "1rem" }}>
-          <SortByDate />
+          <SortByDate
+            onDateRangeChange={(val) => setDateRangeState(val)}
+            onLabelChange={(val) => setDateSortLabel(val)}
+            dateRange={dateRangeState}
+            label={dateSortLabelState}
+          />
         </div>
         <div style={{ margin: "1rem" }}>
           <Pagination

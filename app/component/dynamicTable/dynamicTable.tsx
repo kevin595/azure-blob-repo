@@ -1,21 +1,17 @@
-import { FC } from "react";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RecordType = Record<string, any>;
-
 export interface IColumnType<T> {
-  dataIndex?: string & keyof T;
+  dataKey?: keyof T;
   title: string;
   render?: (value: never, record: T, index: number) => React.ReactNode | void;
   renderHeader?: () => React.ReactNode;
 }
 
-export interface ITableProps<T extends RecordType = never> {
-  dataSource: RecordType[];
+export interface ITableProps<T> {
+  dataSource: T[];
   columns: IColumnType<T>[];
+  dataId: keyof T;
 }
 
-const DynamicTable: FC<ITableProps> = ({ dataSource, columns }) => {
+function DynamicTable<T>({ dataSource, columns, dataId }: ITableProps<T>) {
   return (
     <>
       <table>
@@ -33,12 +29,13 @@ const DynamicTable: FC<ITableProps> = ({ dataSource, columns }) => {
         <tbody>
           {Array.isArray(dataSource) && dataSource.length > 0 ? (
             dataSource.map((data, index) => {
+              const tempKey = data[dataId];
               return (
-                <tr key={data?.id}>
+                <tr key={`${tempKey}`}>
                   {columns.map((column) => {
                     let value;
-                    if (column.dataIndex !== undefined) {
-                      value = data[column.dataIndex];
+                    if (column.dataKey !== undefined) {
+                      value = data[column.dataKey];
                     }
                     if (column.render) {
                       value = column.render(
@@ -48,7 +45,7 @@ const DynamicTable: FC<ITableProps> = ({ dataSource, columns }) => {
                       );
                     }
                     return (
-                      <td key={`${column.title}:${data?.id}`}>
+                      <td key={`${column.title}:${tempKey}`}>
                         {value as never}
                       </td>
                     );
@@ -67,6 +64,6 @@ const DynamicTable: FC<ITableProps> = ({ dataSource, columns }) => {
       </table>
     </>
   );
-};
+}
 
 export default DynamicTable;

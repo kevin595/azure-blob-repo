@@ -44,12 +44,13 @@ const SortByDate: FC<ISortByDateProps> = ({
             padding: "2px 4px",
             backgroundColor: "#f6f6f6",
             border: "1px solid black ",
+            minHeight: "2rem",
           }}
           onClick={() => setIsOpenState(true)}
         >
+          <span>Date:</span>
           {label && (
             <>
-              <span>Date:</span>
               <span>{label}</span>
             </>
           )}

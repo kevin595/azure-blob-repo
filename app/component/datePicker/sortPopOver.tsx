@@ -233,6 +233,7 @@ export const SortPopOver: FC<ISortPopOverProps> = ({
             </div>
             <div>
               <button
+                style={{ marginRight: "1rem" }}
                 onClick={() => {
                   onDateRangeChange(undefined);
                   onClose();
